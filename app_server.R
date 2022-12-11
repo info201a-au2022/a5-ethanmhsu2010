@@ -1,6 +1,7 @@
 # server.R
 library(dplyr)
 library(ggplot2)
+library(plotly)
 
 # Data
 co2_data <- read.csv("https://raw.githubusercontent.com/info201a-au2022/a5-ethanmhsu2010/main/owid-co2-data.csv")
@@ -57,10 +58,41 @@ us_co2_change <- us_2021_c02 - us_2011_c02
 data_2021 <- co2_data %>% 
   filter(year == 2021)
 
+# Build Function
+build_chart <- function(xaxis, source) {
+  
+  # filter by country
+  data_2021 <- data_2021 %>% 
+    filter(country %in% xaxis)
+  
+  test <- ggplot(data_2021, aes_string(x = "country", y = source)) +
+    geom_col(fill = "light blue") +
+    ggtitle("CO2 Emissions Per Capita By Country") +
+    labs(x = "Country",
+         y = "Tonnes of CO2 Emitted")
+  
+  return(ggplotly(test))
+}
+
+
+testfunction <- data_2021 %>% 
+  filter(country %in% c("United States","China"))
+
+tester <- ggplot(testfunction, aes(x = country, y = cement_co2_per_capita)) +
+  geom_col(fill = "light blue")
+
+ggplotly(tester)
+
+# Test Function
+#build_chart("oil_co2_per_capita", "United States")
+
 # Server
 server <- function(input, output) {
   
+  output$chart <- renderPlotly({
+    
+    return(build_chart(input$xaxis, input$source))
+      
+  })
   
-  
-
 }

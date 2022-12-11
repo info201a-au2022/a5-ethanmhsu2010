@@ -64,16 +64,31 @@ interactive_side_panel <- sidebarPanel(
   
   # Text Input for Countries
   selectizeInput(
-    "country",
+    "xaxis",
     label = h3("Select Country(s)"),
     choices = data_2021$country,
-    selected = "United States",
+    selected = c("United States", "Canada", "Mexico"),
     multiple = TRUE
   )
 )
   
 # Main panel for interactive page
-interactive_main_panel <- p("Graph Coming")
+interactive_main_panel <- mainPanel(
+  plotlyOutput("chart"),
+  br(),
+  p(style = "font-size:20px",
+    "The purpose of this interactive is to compare the per capita rates of CO2
+    emissions across multiple countries. Specifically, the visual can be altered
+    by the production sources cement, coal, oil, and gas. This allows the user to 
+    compare the sources directly which ultimately provides insight into
+    how nations emit CO2 differently. To scale for population differences, the
+    emissions data is scaled per capita to ensure countries can be compared
+    directly. Using the Select Country(s) widget on the left, a user may select/
+    compare as many countries as they wish. From various selections, the user
+    may also gain insight into which sources a nation focuses their production on. 
+    Based on the interactive's default state, we can see
+    that Canada and Mexico emit more CO2 from cement per capita than the U.S.")
+)
 
 # Tab panel for interactive page
 interactive_page <- tabPanel(
@@ -85,7 +100,6 @@ interactive_page <- tabPanel(
     interactive_main_panel
   )
 )
-
 
 
 # Navigation Bar
